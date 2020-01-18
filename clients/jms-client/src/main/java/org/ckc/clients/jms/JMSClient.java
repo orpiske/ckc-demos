@@ -142,11 +142,10 @@ public class JMSClient {
     /**
      * Receives data from a JMS queue or topic
      *
-     * @param queue     the queue or topic to receive data from
-     * @param predicate the predicate used to test each received message
+     * @param queue the queue or topic to receive data from
      * @throws JMSException
      */
-    public void receive(final String queue, Predicate<Message> predicate) throws JMSException {
+    public Message receive(final String queue) throws JMSException {
         final long timeout = 3000;
 
         MessageConsumer consumer = null;
@@ -154,13 +153,7 @@ public class JMSClient {
         try {
             consumer = session.createConsumer(createDestination(queue));
 
-            while (true) {
-                final Message message = consumer.receive(timeout);
-
-                if (!predicate.test(message)) {
-                    return;
-                }
-            }
+            return consumer.receive(timeout);
         } finally {
             capturingClose(consumer);
         }

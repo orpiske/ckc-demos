@@ -41,14 +41,33 @@ public abstract class ConsumeAction extends Action {
         this.count = count;
     }
 
-    @Override
-    protected void processCommand(String[] args) {
-        CommandLineParser parser = new DefaultParser();
+    protected String getAddress() {
+        return address;
+    }
 
+    protected int getCount() {
+        return count;
+    }
+
+    protected Options setupOptions() {
         Options options = new Options();
 
         options.addOption("h", "help", false, "prints the help");
         options.addOption("a", "address", true, "the address to produce data to");
+
+        return options;
+    }
+
+    protected void eval(OptionReader optionReader) {
+        optionReader.readRequiredString("address", this::setAddress);
+        optionReader.readRequiredInt("count", this::setCount);
+    }
+
+    @Override
+    protected void processCommand(String[] args) {
+        CommandLineParser parser = new DefaultParser();
+
+        Options options = setupOptions();
 
         try {
             cmdLine = parser.parse(options, args);
@@ -63,7 +82,6 @@ public abstract class ConsumeAction extends Action {
 
         OptionReader optionReader = new OptionReader(this, cmdLine, options);
 
-        optionReader.readRequiredString("address", this::setAddress);
-        optionReader.readRequiredInt("count", this::setCount);
+        eval(optionReader);
     }
 }

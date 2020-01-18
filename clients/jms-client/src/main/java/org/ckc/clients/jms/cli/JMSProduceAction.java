@@ -17,15 +17,64 @@
 
 package org.ckc.clients.jms.cli;
 
+import org.apache.commons.cli.Options;
+import org.ckc.clients.jms.JMSClient;
+import org.ckc.common.cli.OptionReader;
 import org.ckc.common.cli.ProduceAction;
 
+import javax.jms.JMSException;
+
 public class JMSProduceAction extends ProduceAction {
+    private String queue;
+
     public JMSProduceAction(String name, String[] args) {
         super(name, args);
     }
 
+    private void setQueue(String queue) {
+        this.queue = queue;
+    }
+
+    @Override
+    protected Options setupOptions() {
+        Options options = super.setupOptions();
+
+        options.addOption("queue", "queue", true, "the queue to send to");
+
+        return options;
+    }
+
+    @Override
+    protected void processCommand(String[] args) {
+        super.processCommand(args);
+    }
+
+    @Override
+    protected void eval(OptionReader optionReader) {
+        super.eval(optionReader);
+
+        optionReader.readRequiredString("queue", this::setQueue);
+    }
+
     @Override
     public int run() {
+        JMSClient jmsClient = JMSClient.createClient(getAddress());
+
+
+        try {
+            jmsClient.start();
+
+            for (int i = 0; i < getCount(); i++) {
+                jmsClient.send(queue, getText());
+            }
+        } catch (JMSException e) {
+            System.err.println("Unable to send message: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Unable to start the JMS client: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         return 0;
     }
 }

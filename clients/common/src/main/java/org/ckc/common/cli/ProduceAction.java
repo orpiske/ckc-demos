@@ -46,16 +46,40 @@ public abstract class ProduceAction extends Action {
         this.count = count;
     }
 
-    @Override
-    protected void processCommand(String[] args) {
-        CommandLineParser parser = new DefaultParser();
+    protected String getAddress() {
+        return address;
+    }
 
+    protected String getText() {
+        return text;
+    }
+
+    protected int getCount() {
+        return count;
+    }
+
+    protected Options setupOptions() {
         Options options = new Options();
 
         options.addOption("h", "help", false, "prints the help");
         options.addOption("a", "address", true, "the address to produce data to");
         options.addOption("t", "text", true, "the text to send");
         options.addOption("c", "count", true, "how many messages to send");
+
+        return options;
+    }
+
+    protected void eval(OptionReader optionReader) {
+        optionReader.readRequiredString("address", this::setAddress);
+        optionReader.readOptionalString("text", this::setText);
+        optionReader.readRequiredInt("count", this::setCount);
+    }
+
+    @Override
+    protected void processCommand(String[] args) {
+        CommandLineParser parser = new DefaultParser();
+
+        final Options options = setupOptions();
 
         try {
             cmdLine = parser.parse(options, args);
@@ -70,8 +94,6 @@ public abstract class ProduceAction extends Action {
 
         OptionReader optionReader = new OptionReader(this, cmdLine, options);
 
-        optionReader.readRequiredString("address", this::setAddress);
-        optionReader.readOptionalString("text", this::setText);
-        optionReader.readRequiredInt("count", this::setCount);
+        eval(optionReader);
     }
 }
