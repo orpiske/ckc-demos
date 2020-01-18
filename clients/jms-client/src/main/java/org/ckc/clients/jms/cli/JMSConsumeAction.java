@@ -18,7 +18,7 @@
 package org.ckc.clients.jms.cli;
 
 import org.apache.commons.cli.Options;
-import org.ckc.clients.jms.JMSClient;
+import org.ckc.clients.jms.common.JMSClient;
 import org.ckc.common.cli.ConsumeAction;
 import org.ckc.common.cli.OptionReader;
 
@@ -41,14 +41,9 @@ public class JMSConsumeAction extends ConsumeAction {
     protected Options setupOptions() {
         Options options = super.setupOptions();
 
-        options.addOption("queue", "queue", true, "the queue to send to");
+        options.addOption("q", "queue", true, "the queue to consume data from");
 
         return options;
-    }
-
-    @Override
-    protected void processCommand(String[] args) {
-        super.processCommand(args);
     }
 
     @Override

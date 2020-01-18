@@ -54,6 +54,7 @@ public abstract class ConsumeAction extends Action {
 
         options.addOption("h", "help", false, "prints the help");
         options.addOption("a", "address", true, "the address to produce data to");
+        options.addOption("c", "count", true, "the amount of messages to receive (use -1 for infinite)");
 
         return options;
     }

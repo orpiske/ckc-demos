@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-package org.ckc.clients.jms.cli;
+package org.ckc.clients.kafka.cli;
 
 import org.apache.commons.cli.Options;
-import org.ckc.clients.jms.common.JMSClient;
+import org.ckc.clients.kafka.common.KafkaProducerClient;
 import org.ckc.common.cli.OptionReader;
 import org.ckc.common.cli.ProduceAction;
 
-import javax.jms.JMSException;
+import java.util.concurrent.ExecutionException;
 
-public class JMSProduceAction extends ProduceAction {
-    private String queue;
+public class KafkaProduceAction extends ProduceAction {
+    private String topic;
 
-    public JMSProduceAction(String name, String[] args) {
+    public KafkaProduceAction(String name, String[] args) {
         super(name, args);
     }
 
-    private void setQueue(String queue) {
-        this.queue = queue;
+    private void setTopic(String topic) {
+        this.topic = topic;
     }
 
     @Override
     protected Options setupOptions() {
         Options options = super.setupOptions();
 
-        options.addOption("q", "queue", true, "the queue to send to");
+        options.addOption("t", "topic", true, "the topic to send to");
 
         return options;
     }
@@ -48,24 +48,24 @@ public class JMSProduceAction extends ProduceAction {
     protected void eval(OptionReader optionReader) {
         super.eval(optionReader);
 
-        optionReader.readRequiredString("queue", this::setQueue);
+        optionReader.readRequiredString("topic", this::setTopic);
     }
 
     @Override
     public int run() {
-        JMSClient jmsClient = JMSClient.createClient(getAddress());
-
         try {
-            jmsClient.start();
+            KafkaProducerClient<String, String> kafkaClient = new KafkaProducerClient<>(getAddress());
 
             for (int i = 0; i < getCount(); i++) {
-                jmsClient.send(queue, getText());
+                kafkaClient.produce(topic, getText() + " " + i);
+
+//                Thread.sleep(1000);
             }
-        } catch (JMSException e) {
+        } catch (ExecutionException e) {
             System.err.println("Unable to send message: " + e.getMessage());
             e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("Unable to start the JMS client: " + e.getMessage());
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted while sending the message: " + e.getMessage());
             e.printStackTrace();
         }
 

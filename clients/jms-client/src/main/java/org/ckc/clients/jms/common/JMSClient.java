@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-package org.ckc.clients.jms;
+package org.ckc.clients.jms.common;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * A basic multi-protocol JMS client

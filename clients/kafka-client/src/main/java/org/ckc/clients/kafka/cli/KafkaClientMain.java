@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package org.ckc.clients.jms.cli;
+package org.ckc.clients.kafka.cli;
 
 import org.ckc.common.cli.Action;
 
 import static java.util.Arrays.copyOfRange;
 
-public class JMSClientMain {
+public class KafkaClientMain {
     private static final String VERSION = "0.0.1";
-    private static final String NAME = "jms-client";
+    private static final String NAME = "kafka-client";
 
     /**
      * Prints the help for the action and exit
@@ -59,11 +59,11 @@ public class JMSClientMain {
         Action action;
         switch (first) {
             case "produce": {
-                action = new JMSProduceAction(NAME, newArgs);
+                action = new KafkaProduceAction(NAME, newArgs);
                 break;
             }
             case "consume": {
-                action = new JMSConsumeAction(NAME, newArgs);
+                action = new KafkaConsumeAction(NAME, newArgs);
                 break;
             }
             case "help": {
