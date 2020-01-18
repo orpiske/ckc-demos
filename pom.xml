@@ -33,6 +33,8 @@
         <version.qpid-jms-client>0.40.0</version.qpid-jms-client>
         <version.commons-cli>1.4</version.commons-cli>
         <version.kafka>2.4.0</version.kafka>
+
+        <version.maven.compiler>3.8.1</version.maven.compiler>
     </properties>
 
     <modules>
