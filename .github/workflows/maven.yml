@@ -23,8 +23,8 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         dockerfile: runtime/containers/apache-artemis/Dockerfile
     - name: Build, Tag, Publish Docker
-        uses: HurricanKai/Publish-Docker-Github-Action@1.12.1
-        with:
+      uses: HurricanKai/Publish-Docker-Github-Action@1.12.1
+      with:
           name: otavio021/ckc-demo-camel-kafka-connector
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
