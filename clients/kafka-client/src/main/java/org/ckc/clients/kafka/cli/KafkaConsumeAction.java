@@ -44,7 +44,7 @@ public class KafkaConsumeAction extends ConsumeAction {
     protected Options setupOptions() {
         Options options = super.setupOptions();
 
-        options.addOption("t", "topic", true, "the topic to consume data from");
+        options.addOption("T", "topic", true, "the topic to consume data from");
         options.addOption("", "offset", true, "the record offset config ('earliest' or 'latest')");
 
         return options;
