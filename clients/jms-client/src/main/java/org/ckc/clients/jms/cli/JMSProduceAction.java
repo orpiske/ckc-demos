@@ -21,6 +21,7 @@ import org.apache.commons.cli.Options;
 import org.ckc.clients.jms.common.JMSClient;
 import org.ckc.common.cli.OptionReader;
 import org.ckc.common.cli.ProduceAction;
+import org.ckc.common.watermark.Watermark;
 
 import javax.jms.JMSException;
 
@@ -59,7 +60,7 @@ public class JMSProduceAction extends ProduceAction {
             jmsClient.start();
 
             for (int i = 0; i < getCount(); i++) {
-                jmsClient.send(queue, getText());
+                jmsClient.send(queue, Watermark.format("JMS Client", getText(), i));
             }
         } catch (JMSException e) {
             System.err.println("Unable to send message: " + e.getMessage());

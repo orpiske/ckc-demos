@@ -21,6 +21,7 @@ import org.apache.commons.cli.Options;
 import org.ckc.clients.kafka.common.KafkaProducerClient;
 import org.ckc.common.cli.OptionReader;
 import org.ckc.common.cli.ProduceAction;
+import org.ckc.common.watermark.Watermark;
 
 import java.util.concurrent.ExecutionException;
 
@@ -57,9 +58,7 @@ public class KafkaProduceAction extends ProduceAction {
             KafkaProducerClient<String, String> kafkaClient = new KafkaProducerClient<>(getAddress());
 
             for (int i = 0; i < getCount(); i++) {
-                kafkaClient.produce(topic, getText() + " " + i);
-
-//                Thread.sleep(1000);
+                kafkaClient.produce(topic, Watermark.format("Kafka Client", getText(), i));
             }
         } catch (ExecutionException e) {
             System.err.println("Unable to send message: " + e.getMessage());
