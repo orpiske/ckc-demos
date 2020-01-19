@@ -38,7 +38,8 @@ ENV KAFKA_HOME /opt/kafka/
 WORKDIR ${KAFKA_HOME}
 RUN microdnf install -y java-1.8.0-openjdk-headless && microdnf clean all
 COPY --from=buildimg /root/build/kafka /opt/kafka
-COPY --from=buildimg /root/build/camel-kafka-connector/core/target/camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_VERSION}-package/share/java/camel-kafka-connector/ /opt/camel-kafka-connector/
-RUN echo "for file in $(ls /opt/camel-kafka-connector/*) ; do echo $file | tr '\n' ':' ; done" >> /opt/run-connector.sh
-
-RUN echo "$KAFKA_HOME/bin/connect-standalone.sh $KAFKA_HOME/config/connect-standalone.properties config/CamelSinkConnector.properties " >> /opt/run-connector.sh
+COPY --from=buildimg /root/build/camel-kafka-connector/core/target/camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_VERSION}-package/share/java/camel-kafka-connector/ /opt/kafka/libs
+# RUN echo "for file in \$(ls /opt/camel-kafka-connector/*) ; do [[ -f \$file ]] && (echo \$file | tr '\n' ':') ; done" >> /opt/set-classpath.sh
+# RUN echo "export CLASSPATH=$(/opt/set-classpath.sh) ; \$KAFKA_HOME/bin/connect-standalone.sh \$KAFKA_HOME/custom-config/connect-standalone.properties \$KAFKA_HOME/custom-config/CamelJmsSinkConnector.properties" >> /opt/run-connector.sh
+RUN echo "\$KAFKA_HOME/bin/connect-standalone.sh \$KAFKA_HOME/custom-config/connect-standalone.properties \$KAFKA_HOME/custom-config/CamelJmsSinkConnector.properties" >> /opt/run-connector.sh
+RUN chmod +x /opt/run-connector.sh
