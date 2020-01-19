@@ -30,10 +30,11 @@ RUN microdnf install -y java-1.8.0-openjdk-headless && microdnf clean all
 FROM ckc-demos-base AS ckc-demos-client-kafka
 MAINTAINER Otavio Rodolfo Piske <angusyoung@gmail.com>
 ENV CKC_DEMO_TYPE kafka
-COPY --from=buildimg ${CKC_DEMOS_APP_ROOT}/ ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client
-
+COPY --from=buildimg ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client
+WORKDIR ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client/bin
 
 FROM ckc-demos-base AS ckc-demos-client-jms
 MAINTAINER Otavio Rodolfo Piske <angusyoung@gmail.com>
 ENV CKC_DEMO_TYPE jms
-COPY --from=buildimg ${CKC_DEMOS_APP_ROOT}/ ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client
+COPY --from=buildimg ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client
+WORKDIR ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client/bin
