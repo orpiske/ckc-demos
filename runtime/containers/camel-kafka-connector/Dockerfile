@@ -3,13 +3,16 @@ MAINTAINER Otavio Rodolfo Piske <angusyoung@gmail.com>
 ARG CAMEL_KAFKA_CONNECTOR_VERSION
 ENV CAMEL_KAFKA_CONNECTOR_VERSION ${CAMEL_KAFKA_CONNECTOR_VERSION:-0.0.1-SNAPSHOT}
 ARG CAMEL_KAFKA_CONNECTOR_BRANCH
-ENV CAMEL_KAFKA_CONNECTOR_BRANCH ${CAMEL_KAFKA_CONNECTOR_BRANCH:-master}
+ENV CAMEL_KAFKA_CONNECTOR_BRANCH ${CAMEL_KAFKA_CONNECTOR_BRANCH:-strimzi-s2i}
+ARG CAMEL_KAFKA_CONNECTOR_FORK
+ENV CAMEL_KAFKA_CONNECTOR_FORK ${CAMEL_KAFKA_CONNECTOR_FORK:-orpiske}
+
 LABEL CAMEL_KAFKA_CONNECTOR_VERSION=${CAMEL_KAFKA_CONNECTOR_VERSION}
 RUN microdnf install -y java-1.8.0-openjdk-devel which unzip zip wget
 ENV JAVA_HOME /etc/alternatives/jre
 WORKDIR /root/build
-RUN wget https://github.com/apache/camel-kafka-connector/archive/${CAMEL_KAFKA_CONNECTOR_BRANCH}.zip -O camel-kafka-connector.zip && unzip camel-kafka-connector.zip && ln -s camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_BRANCH} camel-kafka-connector
-RUN cd camel-kafka-connector && ./mvnw -DskipTests=true clean package
+RUN wget https://github.com/${CAMEL_KAFKA_CONNECTOR_FORK}/camel-kafka-connector/archive/${CAMEL_KAFKA_CONNECTOR_BRANCH}.zip -O camel-kafka-connector.zip && unzip camel-kafka-connector.zip && ln -s camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_BRANCH} camel-kafka-connector
+RUN cd camel-kafka-connector && ./mvnw -Dscope=compile -DskipTests=true clean package
 
 FROM strimzi/kafka:0.16.0-kafka-2.4.0 as camel-kafka-connector
 ARG CAMEL_KAFKA_CONNECTOR_VERSION
