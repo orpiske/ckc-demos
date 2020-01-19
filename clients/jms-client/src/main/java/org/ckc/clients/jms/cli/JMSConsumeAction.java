@@ -60,23 +60,18 @@ public class JMSConsumeAction extends ConsumeAction {
         try {
             jmsClient.start();
 
-            for (int i = 0; i < getCount(); i++) {
+            int i = 0;
+            while (i != getCount()) {
                 Message message = jmsClient.receive(queue);
-
-                if (message == null) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
 
                 if (message instanceof TextMessage) {
                     String text = ((TextMessage) message).getText();
                     System.out.println(text);
-                }
-                else {
-                    System.err.println("Unexpected message type");
+
+                    i++;
+                    if (i == getCount()) {
+                        break;
+                    }
                 }
             }
         } catch (JMSException e) {

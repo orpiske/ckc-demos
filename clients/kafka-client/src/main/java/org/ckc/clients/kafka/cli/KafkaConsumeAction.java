@@ -66,18 +66,17 @@ public class KafkaConsumeAction extends ConsumeAction {
             kafkaClient.subscribe(topic);
 
             int i = 0;
-            while (true) {
+            while (i != getCount()) {
                 ConsumerRecords<String, String> records = kafkaClient.consume();
 
                 for (ConsumerRecord<String, String> record : records) {
                     System.out.println(record.value());
-                }
 
-                i++;
-                if (i == getCount()) {
-                    break;
+                    i++;
+                    if (i == getCount()) {
+                        break;
+                    }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
