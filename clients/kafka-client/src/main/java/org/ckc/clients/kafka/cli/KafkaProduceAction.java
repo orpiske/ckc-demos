@@ -39,7 +39,7 @@ public class KafkaProduceAction extends ProduceAction {
     protected Options setupOptions() {
         Options options = super.setupOptions();
 
-        options.addOption("t", "topic", true, "the topic to send to");
+        options.addOption("T", "topic", true, "the topic to send to");
 
         return options;
     }
