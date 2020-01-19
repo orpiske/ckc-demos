@@ -30,16 +30,16 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           dockerfile: runtime/containers/camel-kafka-connector/Dockerfile
     - name: Publish Docker (Kafka Client Image)
-        uses: elgohr/Publish-Docker-Github-Action@a6e48211ae26c311681c44c45a0ca5130dd9c7aa
-        with:
+      uses: elgohr/Publish-Docker-Github-Action@a6e48211ae26c311681c44c45a0ca5130dd9c7aa
+      with:
           name: otavio021/ckc-demos-client-kafka
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           buildoptions: "--target ckc-demos-client-kafka"
           dockerfile: runtime/containers/camel-demos/Dockerfile
     - name: Publish Docker (JMS Client Image)
-        uses: elgohr/Publish-Docker-Github-Action@a6e48211ae26c311681c44c45a0ca5130dd9c7aa
-        with:
+      uses: elgohr/Publish-Docker-Github-Action@a6e48211ae26c311681c44c45a0ca5130dd9c7aa
+      with:
           name: otavio021/ckc-demos-client-jms
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
