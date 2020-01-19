@@ -43,13 +43,3 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#  camel-kafka-connector:
-#    build:
-#      context: .
-#    depends_on:
-#      - kafka
-#    ports:
-#      - "9090:9090"
-#    environment:
-#      LOG_DIR: "/tmp/logs"
-#      KAFKA_CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
