@@ -104,8 +104,22 @@ public class JMSClient {
             final ConnectionFactory factory = connectionFactory.apply(url);
 
             LOG.debug("Creating the connection");
-            connection = factory.createConnection();
-            LOG.debug("Connection created successfully");
+
+            int retries = 30;
+            do {
+                try {
+                    connection = factory.createConnection();
+                    LOG.debug("Connection created successfully");
+                    break;
+                } catch (JMSException e) {
+                    retries--;
+
+                    if (retries == 0) {
+                        throw e;
+                    }
+                    Thread.sleep(1000);
+                }
+            } while (retries > 0);
 
             LOG.debug("Creating the JMS session");
             this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
