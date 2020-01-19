@@ -71,7 +71,7 @@ public abstract class ProduceAction extends Action {
 
     protected void eval(OptionReader optionReader) {
         optionReader.readRequiredString("address", this::setAddress);
-        optionReader.readOptionalString("text", this::setText);
+        optionReader.readRequiredString("text", this::setText);
         optionReader.readRequiredInt("count", this::setCount);
     }
 
