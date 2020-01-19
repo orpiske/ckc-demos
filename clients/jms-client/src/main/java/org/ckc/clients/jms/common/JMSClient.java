@@ -112,6 +112,7 @@ public class JMSClient {
                     LOG.debug("Connection created successfully");
                     break;
                 } catch (JMSException e) {
+                    LOG.warn("Unable to connect ... retrying");
                     retries--;
 
                     if (retries == 0) {
