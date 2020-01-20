@@ -15,7 +15,7 @@
 ## limitations under the License.
 ## ---------------------------------------------------------------------------
 
-version: '2'
+version: '3.4'
 services:
   zookeeper:
     image: strimzi/kafka:0.16.0-kafka-2.4.0
@@ -48,20 +48,20 @@ services:
     ports:
       - "5672:5672"
       - "8161:8161"
-  # camel-kafka-connector:
-  #   image: otavio021/ckc-demo-camel-kafka-connector:latest
-  #   volumes:
-  #     - ./files/:/opt/kafka/custom-config/
-  #   command: [
-  #     "sh", "-c",
-  #     "KAFKA_CONNECT_CONFIGURATION=$$(cat /opt/kafka/custom-config/CamelJmsSinkConnector.properties) /opt/kafka/kafka_connect_run.sh"
-  #   ]
-  #   depends_on:
-  #     - kafka
-  #     - broker
-  #   environment:
-  #     LOG_DIR: "/tmp/logs"
-  #     KAFKA_CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+  camel-kafka-connector:
+    image: otavio021/ckc-demo-camel-kafka-connector:latest
+    volumes:
+      - ./files/:/opt/kafka/custom-config/
+    command: [
+      "sh", "-c",
+      "sleep 10s && /opt/run-connector.sh"
+    ]
+    depends_on:
+      - kafka
+      - broker
+    environment:
+      LOG_DIR: "/tmp/logs"
+      KAFKA_CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
   ckc-jms-client:
     image: otavio021/ckc-demos-client-jms:latest
     command: [
@@ -74,8 +74,8 @@ services:
     image: otavio021/ckc-demos-client-kafka:latest
     command: [
       "sh", "-c",
-      "./kafka-client produce -a kafka:9092 -c 10 -T demo-topic -t 'Hello DevConf 2020'"
+      "sleep 15s && ./kafka-client produce -a kafka:9092 -c 10 -T demo-topic -t 'Hello DevConf 2020'"
     ]
     depends_on:
       - kafka
-      # - camel-kafka-connector
+      - camel-kafka-connector

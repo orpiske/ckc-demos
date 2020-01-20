@@ -49,12 +49,14 @@ services:
       - "5672:5672"
       - "8161:8161"
   camel-kafka-connector:
-    image: otavio021/ckc-demo-camel-kafka-connector:latest
+    build:
+      context: ../../../containers/camel-kafka-connector
+      target: ckc-demo-camel-kafka-connector
     volumes:
       - ./files/:/opt/kafka/custom-config/
     command: [
       "sh", "-c",
-      "KAFKA_CONNECT_CONFIGURATION=$$(cat /opt/kafka/custom-config/CamelJmsSinkConnector.properties) /opt/kafka/kafka_connect_run.sh"
+      "sleep 10s && /opt/run-connector.sh"
     ]
     depends_on:
       - kafka
@@ -68,7 +70,7 @@ services:
       target: ckc-demos-client-jms
     command: [
       "sh", "-c",
-      "./jms-client consume -a amqp://broker -c 10 -q demo-queue"
+      "./jms-client consume -a amqp://broker -c -1 -q demo-queue"
     ]
     depends_on:
       - broker
@@ -78,7 +80,7 @@ services:
       target: ckc-demos-client-kafka
     command: [
       "sh", "-c",
-      "./kafka-client produce -a kafka:9092 -c 10 -T demo-topic -t 'Hello DevConf 2020'"
+      "sleep 15s && ./kafka-client produce -a kafka:9092 -c 10 -T demo-topic -t 'Hello DevConf 2020'"
     ]
     depends_on:
       - kafka

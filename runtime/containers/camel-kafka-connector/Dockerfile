@@ -19,17 +19,7 @@ RUN wget -c http://apache.miloslavbrada.cz/kafka/${KAFKA_VERSION}/kafka_2.12-${K
     mkdir -p /root/build/kafka && \
     tar --strip-components=1 -xvf kafka_2.12-${KAFKA_VERSION}.tgz -C /root/build/kafka
 
-# FROM strimzi/kafka:0.16.0-kafka-2.4.0 as camel-kafka-connector
-# ARG CAMEL_KAFKA_CONNECTOR_VERSION
-# ENV CAMEL_KAFKA_CONNECTOR_VERSION ${CAMEL_KAFKA_CONNECTOR_VERSION:-0.0.1-SNAPSHOT}
-# VOLUME /opt/kafka/custom-config/
-# USER root:root
-# RUN mkdir -p /opt/kafka/custom-config/ && touch /opt/kafka/custom-config/log4j.properties
-# COPY --from=buildimg /root/build/camel-kafka-connector/core/target/camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_VERSION}-package/share/java/camel-kafka-connector/ /opt/kafka/plugins/camel-kafka-connector/
-# COPY --from=buildimg /root/build/camel-kafka-connector/examples/ /opt/kafka/custom-config
-# USER 1001
-
-FROM registry.access.redhat.com/ubi8/ubi-minimal AS ckc-demos-base
+FROM registry.access.redhat.com/ubi8/ubi-minimal AS ckc-demo-camel-kafka-connector
 ARG KAFKA_VERSION
 ENV KAFKA_VERSION ${KAFKA_VERSION:-2.4.0}
 ARG CAMEL_KAFKA_CONNECTOR_VERSION
@@ -39,7 +29,5 @@ WORKDIR ${KAFKA_HOME}
 RUN microdnf install -y java-1.8.0-openjdk-headless && microdnf clean all
 COPY --from=buildimg /root/build/kafka /opt/kafka
 COPY --from=buildimg /root/build/camel-kafka-connector/core/target/camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_VERSION}-package/share/java/camel-kafka-connector/ /opt/kafka/libs
-# RUN echo "for file in \$(ls /opt/camel-kafka-connector/*) ; do [[ -f \$file ]] && (echo \$file | tr '\n' ':') ; done" >> /opt/set-classpath.sh
-# RUN echo "export CLASSPATH=$(/opt/set-classpath.sh) ; \$KAFKA_HOME/bin/connect-standalone.sh \$KAFKA_HOME/custom-config/connect-standalone.properties \$KAFKA_HOME/custom-config/CamelJmsSinkConnector.properties" >> /opt/run-connector.sh
 RUN echo "\$KAFKA_HOME/bin/connect-standalone.sh \$KAFKA_HOME/custom-config/connect-standalone.properties \$KAFKA_HOME/custom-config/CamelJmsSinkConnector.properties" >> /opt/run-connector.sh
 RUN chmod +x /opt/run-connector.sh
