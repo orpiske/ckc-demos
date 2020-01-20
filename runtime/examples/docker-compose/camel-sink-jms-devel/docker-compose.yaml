@@ -70,7 +70,7 @@ services:
       target: ckc-demos-client-jms
     command: [
       "sh", "-c",
-      "./jms-client consume -a amqp://broker -c -1 -q demo-queue"
+      "sleep 5s && ./jms-client consume -a amqp://broker -c -1 -q demo-queue"
     ]
     depends_on:
       - broker
