@@ -28,6 +28,7 @@ ENV KAFKA_HOME /opt/kafka/
 WORKDIR ${KAFKA_HOME}
 RUN microdnf install -y java-1.8.0-openjdk-headless && microdnf clean all
 COPY --from=buildimg /root/build/kafka /opt/kafka
+COPY --from=buildimg /root/build/camel-kafka-connector/core/target/camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_VERSION}.jar /opt/kafka/libs/camel-kafka-connector/
 COPY --from=buildimg /root/build/camel-kafka-connector/core/target/camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_VERSION}-package/share/java/camel-kafka-connector/ /opt/kafka/libs
 RUN echo "\$KAFKA_HOME/bin/connect-standalone.sh \$KAFKA_HOME/custom-config/connect-standalone.properties \$KAFKA_HOME/custom-config/CamelJmsSinkConnector.properties" >> /opt/run-connector.sh
 RUN chmod +x /opt/run-connector.sh
