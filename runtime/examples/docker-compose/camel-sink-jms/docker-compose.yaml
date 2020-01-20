@@ -23,6 +23,8 @@ services:
       "sh", "-c",
       "bin/zookeeper-server-start.sh config/zookeeper.properties"
     ]
+    logging:
+      driver: "none"
     ports:
       - "2181:2181"
     environment:
@@ -34,6 +36,8 @@ services:
       "sh", "-c",
       "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT}"
     ]
+    logging:
+      driver: "none"
     depends_on:
       - zookeeper
     ports:
@@ -45,6 +49,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
   broker:
     image: otavio021/ckc-demo-artemis
+    logging:
+      driver: "none"
     ports:
       - "5672:5672"
       - "8161:8161"
