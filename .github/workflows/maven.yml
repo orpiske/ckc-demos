@@ -46,8 +46,8 @@ jobs:
           buildoptions: "--target ckc-demos-client-jms"
           dockerfile: runtime/containers/ckc-demos/Dockerfile
     - name: Publish Docker (Integrator)
-        uses: elgohr/Publish-Docker-Github-Action@a6e48211ae26c311681c44c45a0ca5130dd9c7aa
-        with:
+      uses: elgohr/Publish-Docker-Github-Action@a6e48211ae26c311681c44c45a0ca5130dd9c7aa
+      with:
           name: otavio021/ckc-demos-integrator
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
