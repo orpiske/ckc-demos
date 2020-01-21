@@ -15,19 +15,28 @@ public class JmsToKafkaRoute extends RouteBuilder {
         this.jmsQueue = jmsQueue;
         this.kafkaBroker = kafkaBroker;
         this.kafkaTopic = kafkaTopic;
+    }
 
+    // Setup the connection factory for the Simple JMS2 component
+    private void setupComponent() {
+        Sjms2Component sjms2Component = new Sjms2Component();
+        sjms2Component.setConnectionFactory(new JmsConnectionFactory(jmsBroker));
+        getContext().addComponent("sjms2", sjms2Component);
     }
 
 
     @Override
     public void configure() throws Exception {
-        Sjms2Component sjms2Component = new Sjms2Component();
-        sjms2Component.setConnectionFactory(new JmsConnectionFactory(String.format("amqp://%s", jmsBroker)));
-        getContext().addComponent("sjms2", sjms2Component);
+        setupComponent();
 
         String jmsUrl = String.format("sjms2://queue:%s", jmsQueue);
         String kafkaUrl = String.format("kafka:%s?brokers=%s", kafkaTopic, kafkaBroker);
 
+        System.out.println(String.format("Creating Camel route from(%s).to(%s)", jmsUrl, kafkaUrl));
+
+        // Define the route
         from(jmsUrl).to(kafkaUrl);
     }
+
+
 }
