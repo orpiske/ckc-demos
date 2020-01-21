@@ -19,7 +19,7 @@ RUN mkdir -p ${CKC_DEMO_TYPE}-client && tar --strip-components=1 -xvf /root/buil
 ENV CKC_DEMO_TYPE jms
 RUN mkdir -p ${CKC_DEMO_TYPE}-client && tar --strip-components=1 -xvf /root/build/ckc-demos/clients/${CKC_DEMO_TYPE}-client/target/${CKC_DEMO_TYPE}-client-${CKC_DEMOS_VERSION}-bin.tar.gz -C ${CKC_DEMO_TYPE}-client
 ENV CKC_DEMO_TYPE integrator
-RUN mkdir -p ${CKC_DEMO_TYPE} && tar --strip-components=1 -xvf /root/build/ckc-demos/integrator/${CKC_DEMO_TYPE}/target/${CKC_DEMO_TYPE}-${CKC_DEMOS_VERSION}-bin.tar.gz -C ${CKC_DEMO_TYPE}
+RUN mkdir -p ${CKC_DEMO_TYPE} && tar --strip-components=1 -xvf /root/build/ckc-demos/${CKC_DEMO_TYPE}/target/${CKC_DEMO_TYPE}-${CKC_DEMOS_VERSION}-bin.tar.gz -C ${CKC_DEMO_TYPE}
 
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal AS ckc-demos-base
