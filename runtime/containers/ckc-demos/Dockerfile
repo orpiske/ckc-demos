@@ -18,6 +18,8 @@ ENV CKC_DEMO_TYPE kafka
 RUN mkdir -p ${CKC_DEMO_TYPE}-client && tar --strip-components=1 -xvf /root/build/ckc-demos/clients/${CKC_DEMO_TYPE}-client/target/${CKC_DEMO_TYPE}-client-${CKC_DEMOS_VERSION}-bin.tar.gz -C ${CKC_DEMO_TYPE}-client
 ENV CKC_DEMO_TYPE jms
 RUN mkdir -p ${CKC_DEMO_TYPE}-client && tar --strip-components=1 -xvf /root/build/ckc-demos/clients/${CKC_DEMO_TYPE}-client/target/${CKC_DEMO_TYPE}-client-${CKC_DEMOS_VERSION}-bin.tar.gz -C ${CKC_DEMO_TYPE}-client
+ENV CKC_DEMO_TYPE integrator
+RUN mkdir -p ${CKC_DEMO_TYPE} && tar --strip-components=1 -xvf /root/build/ckc-demos/integrator/${CKC_DEMO_TYPE}/target/${CKC_DEMO_TYPE}-${CKC_DEMOS_VERSION}-bin.tar.gz -C ${CKC_DEMO_TYPE}
 
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal AS ckc-demos-base
@@ -38,3 +40,10 @@ MAINTAINER Otavio Rodolfo Piske <angusyoung@gmail.com>
 ENV CKC_DEMO_TYPE jms
 COPY --from=buildimg ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client
 WORKDIR ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}-client/bin
+
+
+FROM ckc-demos-base AS ckc-demos-integrator
+MAINTAINER Otavio Rodolfo Piske <angusyoung@gmail.com>
+ENV CKC_DEMO_TYPE integrator
+COPY --from=buildimg ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE} ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}
+WORKDIR ${CKC_DEMOS_APP_ROOT}/${CKC_DEMO_TYPE}/bin
