@@ -1,3 +1,5 @@
+package org.ckc.integrator.cli;
+
 import org.apache.camel.main.Main;
 
 public class IntegratorMain {

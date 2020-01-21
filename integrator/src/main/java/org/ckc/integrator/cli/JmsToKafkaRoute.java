@@ -1,3 +1,5 @@
+package org.ckc.integrator.cli;
+
 import java.util.Properties;
 
 import org.apache.camel.builder.RouteBuilder;
