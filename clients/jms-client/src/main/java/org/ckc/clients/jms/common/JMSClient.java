@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
+import java.util.Enumeration;
 import java.util.function.Function;
 
 /**
@@ -173,19 +174,50 @@ public class JMSClient {
         }
     }
 
+    /**
+     * Sends data to a JMS queue or topic
+     *
+     * @param request the queue or topic to send data to
+     * @param data  the (string) data to send
+     * @throws JMSException
+     */
+    public void replyTo(final Message request, final String data) throws JMSException {
+        MessageProducer producer = null;
+
+        try {
+            Destination replyTo = request.getJMSReplyTo();
+            producer = session.createProducer(replyTo);
+
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            producer.setTimeToLive(0);
+
+            Message reply = session.createTextMessage(data);
+            reply.setJMSCorrelationID(request.getJMSCorrelationID());
+
+            Enumeration properties = request.getPropertyNames();
+            while (properties.hasMoreElements()) {
+                Object current = properties.nextElement();
+                reply.setObjectProperty((String) current, request.getObjectProperty((String) current));
+            }
+
+            producer.send(reply);
+        } finally {
+            capturingClose(producer);
+        }
+    }
 
     /**
      * Sends data to a JMS queue or topic
      *
-     * @param queue the queue or topic to send data to
+     * @param destination the queue or topic to send data to
      * @param data  the (string) data to send
      * @throws JMSException
      */
-    public void send(final String queue, final String data) throws JMSException {
+    public void send(final Destination destination, final String data) throws JMSException {
         MessageProducer producer = null;
 
         try {
-            producer = session.createProducer(createDestination(queue));
+            producer = session.createProducer(destination);
 
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             producer.setTimeToLive(0);
@@ -196,6 +228,18 @@ public class JMSClient {
         } finally {
             capturingClose(producer);
         }
+    }
+
+
+    /**
+     * Sends data to a JMS queue or topic
+     *
+     * @param queue the queue or topic to send data to
+     * @param data  the (string) data to send
+     * @throws JMSException
+     */
+    public void send(final String queue, final String data) throws JMSException {
+        send(createDestination(queue), data);
     }
 
     /**

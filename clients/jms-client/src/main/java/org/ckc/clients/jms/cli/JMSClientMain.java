@@ -36,6 +36,7 @@ public class JMSClientMain {
         System.out.println("Actions:");
         System.out.println("   produce");
         System.out.println("   consume");
+        System.out.println("   exchange");
         System.out.println("----------");
         System.out.println("   help");
         System.out.println("   --version");
@@ -64,6 +65,10 @@ public class JMSClientMain {
             }
             case "consume": {
                 action = new JMSConsumeAction(NAME, newArgs);
+                break;
+            }
+            case "exchange": {
+                action = new JMSExchangeAction(NAME, newArgs);
                 break;
             }
             case "help": {
