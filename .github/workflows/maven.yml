@@ -15,7 +15,7 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -PPackage -B package --file pom.xml
-    - name: Publish Docker (Artemis)
+    - name: Publish Docker (Apache Artemis)
       uses: elgohr/Publish-Docker-Github-Action@a6e48211ae26c311681c44c45a0ca5130dd9c7aa
       with:
         name: otavio021/ckc-demo-artemis
