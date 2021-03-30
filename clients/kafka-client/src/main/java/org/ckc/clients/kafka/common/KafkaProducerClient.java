@@ -43,6 +43,20 @@ public class KafkaProducerClient<K, V> extends KafkaClient<K, V> {
         producer = new KafkaProducer<K, V>(props);
     }
 
+    /**
+     * Constructs the properties using the given bootstrap server
+     *
+     * @param bootstrapServer the address of the server in the format
+     *                        PLAINTEXT://${address}:${port}
+     */
+    public KafkaProducerClient(ProducerPropertyFactory producerPropertyFactory) {
+        this.producerPropertyFactory = producerPropertyFactory;
+
+        Properties props = producerPropertyFactory.getProperties();
+
+        producer = new KafkaProducer<K, V>(props);
+    }
+
 
     /**
      * Sends data to a topic

@@ -17,7 +17,10 @@
 
 package org.ckc.clients.kafka.cli;
 
+import com.github.javafaker.Faker;
+import org.apache.Person;
 import org.apache.commons.cli.Options;
+import org.ckc.clients.kafka.common.AvroProducerPropertyFactory;
 import org.ckc.clients.kafka.common.KafkaProducerClient;
 import org.ckc.common.cli.OptionReader;
 import org.ckc.common.cli.ProduceAction;
@@ -26,7 +29,14 @@ import org.ckc.common.watermark.Watermark;
 import java.util.concurrent.ExecutionException;
 
 public class KafkaProduceAction extends ProduceAction {
+    private enum Format {
+        TEXT,
+        AVRO,
+    };
+
     private String topic;
+    private Format format;
+
 
     public KafkaProduceAction(String name, String[] args) {
         super(name, args);
@@ -36,11 +46,33 @@ public class KafkaProduceAction extends ProduceAction {
         this.topic = topic;
     }
 
+    public void setFormat(String formatName) {
+        if (formatName == null || formatName.isEmpty()) {
+            format = Format.TEXT;
+
+            return;
+        }
+
+        switch (formatName.toLowerCase()) {
+            case "avro": {
+                format = Format.AVRO;
+                break;
+            }
+            case "text":
+            default: {
+                format = Format.TEXT;
+                break;
+            }
+        }
+
+    }
+
     @Override
     protected Options setupOptions() {
         Options options = super.setupOptions();
 
         options.addOption("T", "topic", true, "the topic to send to");
+        options.addOption("f", "format", true, "the message format to use");
 
         return options;
     }
@@ -50,15 +82,46 @@ public class KafkaProduceAction extends ProduceAction {
         super.eval(optionReader);
 
         optionReader.readRequiredString("topic", this::setTopic);
+        optionReader.readRequiredString("format", this::setFormat);
+    }
+
+    private void sendString() throws ExecutionException, InterruptedException {
+        KafkaProducerClient<String, String> kafkaClient = new KafkaProducerClient<>(getAddress());
+
+        for (int i = 0; i < getCount(); i++) {
+            kafkaClient.produce(topic, Watermark.format("Kafka Client", getText(), i));
+        }
+    }
+
+    private void sendAvroBinary() throws ExecutionException, InterruptedException {
+        AvroProducerPropertyFactory avroProducerPropertyFactory = new AvroProducerPropertyFactory(getAddress());
+        KafkaProducerClient<String, Person> kafkaClient = new KafkaProducerClient<>(avroProducerPropertyFactory);
+        Faker faker = new Faker();
+
+        for (int i = 0; i < getCount(); i++) {
+            Person person = new Person();
+            person.setFirstName(faker.name().firstName());
+            person.setLastName(faker.name().lastName());
+            person.setAge(faker.random().nextInt(0, 110));
+
+            System.out.println("Sending data for " + person);
+            kafkaClient.produce(topic, person);
+        }
     }
 
     @Override
     public int run() {
         try {
-            KafkaProducerClient<String, String> kafkaClient = new KafkaProducerClient<>(getAddress());
-
-            for (int i = 0; i < getCount(); i++) {
-                kafkaClient.produce(topic, Watermark.format("Kafka Client", getText(), i));
+            switch (format) {
+                case AVRO: {
+                    sendAvroBinary();
+                    break;
+                }
+                case TEXT:
+                default: {
+                    sendString();
+                    break;
+                }
             }
         } catch (ExecutionException e) {
             System.err.println("Unable to send message: " + e.getMessage());
