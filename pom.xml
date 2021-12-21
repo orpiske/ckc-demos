@@ -29,7 +29,7 @@
     <properties>
         <version.java>1.8</version.java>
 
-        <version.log4j2>2.16.0</version.log4j2>
+        <version.log4j2>2.17.0</version.log4j2>
         <version.qpid-jms-client>0.40.0</version.qpid-jms-client>
         <version.commons-cli>1.4</version.commons-cli>
         <version.kafka>2.4.0</version.kafka>
