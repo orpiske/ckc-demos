@@ -15,7 +15,7 @@ ENV JAVA_HOME /etc/alternatives/jre
 WORKDIR /root/build
 RUN wget https://github.com/${CAMEL_KAFKA_CONNECTOR_FORK}/camel-kafka-connector/archive/${CAMEL_KAFKA_CONNECTOR_BRANCH}.zip -O camel-kafka-connector.zip && unzip camel-kafka-connector.zip && ln -s camel-kafka-connector-${CAMEL_KAFKA_CONNECTOR_BRANCH} camel-kafka-connector
 RUN cd camel-kafka-connector && ./mvnw -Dscope=compile -DskipTests=true clean package
-RUN wget -c https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_2.12-${KAFKA_VERSION.tgz && \
+RUN wget -c https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_2.12-${KAFKA_VERSION}.tgz && \
     mkdir -p /root/build/kafka && \
     tar --strip-components=1 -xvf kafka_2.12-${KAFKA_VERSION}.tgz -C /root/build/kafka
 
